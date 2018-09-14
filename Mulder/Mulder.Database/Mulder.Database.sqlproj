@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{249475dc-b0a7-4665-ac89-1f4c660ad2e9}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -67,5 +67,8 @@
     <Build Include="dbo\Spectators.sql" />
     <Build Include="dbo\MatchesSpectators.sql" />
     <Build Include="dbo\MatchesScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Mulder.Database.publish.xml" />
   </ItemGroup>
 </Project>
