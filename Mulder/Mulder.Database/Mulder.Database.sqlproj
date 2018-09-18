@@ -67,6 +67,7 @@
     <Build Include="dbo\Spectators.sql" />
     <Build Include="dbo\MatchesSpectators.sql" />
     <Build Include="dbo\MatchesScore.sql" />
+    <Build Include="dbo\PlayersScore.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Mulder.Database.publish.xml" />
