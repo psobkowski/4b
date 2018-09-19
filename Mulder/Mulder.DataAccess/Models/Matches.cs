@@ -16,7 +16,7 @@ namespace Mulder.DataAccess.Models
         public string Location { get; set; }
         public string Address { get; set; }
         public DateTime? Date { get; set; }
-        public short? Year { get; set; }
+        public short Year { get; set; }
 
         public ICollection<MatchesLineUp> MatchesLineUp { get; set; }
         public ICollection<MatchesScore> MatchesScore { get; set; }

@@ -4,5 +4,5 @@
 	[Location] NVARCHAR(20) NOT NULL,
 	[Address] NVARCHAR(255) NOT NULL,
 	[Date] DateTime,
-	[Year] SMALLINT,
+	[Year] SMALLINT NOT NULL,
 )
