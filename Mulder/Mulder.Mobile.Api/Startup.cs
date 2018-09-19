@@ -26,10 +26,13 @@ namespace Mulder.Mobile.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = @"Server=SPN-PC002;Database=Mudler;User Id=sa;Password=sa;";
-            services.AddDbContext<MulderContext>(options => options.UseSqlServer(connection));
-            services.AddScoped<IMatchesService, MatchesService>();
             services.AddMvc();
+
+            //var connection = @"Server=SPN-PC002;Database=Mudler;User Id=sa;Password=sa;";
+            //services.AddDbContext<MulderContext>();
+
+            services.AddSingleton<MulderContext, MulderContext>();
+            services.AddScoped<IMatchesService, MatchesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -16,7 +16,7 @@ namespace Mulder.Mobile.Api.Services
 
         public List<MatchInfo> GetMatches()
         {
-            var matches = this.Context.Matches.Select(x => new MatchInfo()
+            var matches = this.Context.Matches.Select(x => new MatchInfo
             {
                 Id = x.Id.ToString(),
                 Location = x.Location,
@@ -29,7 +29,7 @@ namespace Mulder.Mobile.Api.Services
 
         private ScoreInfo GetScoreInfo(List<MatchesScore> matchesScore)
         {
-            var scoreInfo = new ScoreInfo()
+            var scoreInfo = new ScoreInfo
             {
                 Team1Id = matchesScore[0]?.TeamId.ToString(),
                 Team1HalfTimeScore = matchesScore[0]?.HalfTimeScore.ToString(),
