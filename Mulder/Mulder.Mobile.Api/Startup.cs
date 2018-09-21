@@ -28,10 +28,12 @@ namespace Mulder.Mobile.Api
         {
             services.AddMvc();
 
-            //var connection = @"Server=SPN-PC002;Database=Mudler;User Id=sa;Password=sa;";
-            //services.AddDbContext<MulderContext>();
-
-            services.AddSingleton<MulderContext, MulderContext>();
+            services.AddEntityFrameworkSqlServer().AddDbContext<MulderContext>(
+                options =>
+                {
+                    options.UseSqlServer(@"Server=SPN-PC002;Database=Mulder;User Id=mul_owner;Password=mu_owner;");
+                });
+            
             services.AddScoped<IMatchesService, MatchesService>();
         }
 

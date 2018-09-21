@@ -8,5 +8,7 @@ namespace Mulder.DataAccess.Models
         public int Id { get; set; }
         public int MatchesLineUpId { get; set; }
         public short? Minute { get; set; }
+
+        public MatchesLineUp MatchesLineUp { get; set; }
     }
 }

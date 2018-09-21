@@ -6,5 +6,6 @@ namespace Mulder.Mobile.Api.Services
     public interface IMatchesService
     {
         List<MatchInfo> GetMatches();
+        MatchDetailsInfo GetMatch(string id);
     }
 }

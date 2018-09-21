@@ -5,6 +5,11 @@ namespace Mulder.DataAccess.Models
 {
     public partial class MatchesLineUp
     {
+        public MatchesLineUp()
+        {
+            PlayersScore = new HashSet<PlayersScore>();
+        }
+
         public int Id { get; set; }
         public int MatchId { get; set; }
         public int TeamId { get; set; }
@@ -16,5 +21,6 @@ namespace Mulder.DataAccess.Models
         public Matches Match { get; set; }
         public Players Player { get; set; }
         public Teams Team { get; set; }
+        public ICollection<PlayersScore> PlayersScore { get; set; }
     }
 }

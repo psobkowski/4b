@@ -25,7 +25,7 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                     Id = "4",
                     Location = "Jeziorany",
                     Year = "2018",
-                    SocreInfo = new ScoreInfo
+                    ScoreInfo = new ScoreInfo
                     {
                         Team1Id = "1", Team1HalfTimeScore = "2", Team1Score = "6",
                         Team2Id = "2", Team2HalfTimeScore = "1", Team2Score = "2"
@@ -36,7 +36,7 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                     Id = "5",
                     Location = "Olsztyn",
                     Year = "2012",
-                    SocreInfo = new ScoreInfo
+                    ScoreInfo = new ScoreInfo
                     {
                         Team1Id = "1", Team1HalfTimeScore = "3", Team1Score = "5",
                         Team2Id = "2", Team2HalfTimeScore = "2", Team2Score = "3"
