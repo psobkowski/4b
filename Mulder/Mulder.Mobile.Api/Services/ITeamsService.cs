@@ -3,9 +3,9 @@ using Mulder.Mobile.Api.Domain;
 
 namespace Mulder.Mobile.Api.Services
 {
-    public interface IMatchesService
+    public interface ITeamsService
     {
-        List<MatchInfo> GetMatches();
-        MatchDetailsInfo GetMatch(int id);
+        TeamInfo GetTeam(int id);
+        List<TeamInfo> GetTeams();
     }
 }

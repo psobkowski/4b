@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace Mulder.Mobile.Api.Domain
 {
-    public class SpectatorInfo
+    public class PlayerDetailsInfo : PlayerInfo
     {
-        public int Id { get; set; }
         public string Name { get; set; }
+        public string Matches { get; set; }
+        public string Goals { get; set; }
+        public string Avg {get; set;}
     }
 }

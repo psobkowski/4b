@@ -8,15 +8,15 @@ using System;
 namespace Mulder.Mobile.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class MatchesController  : Controller
+    public class TeamsController  : Controller
     {
-        private IMatchesService MatchesService { get; set; }
+        private ITeamsService TeamsService { get; set; }
 
         private JsonSerializerSettings JsonSettings { get; set; }
 
-        public MatchesController(IMatchesService matchesService)
+        public TeamsController(ITeamsService teamsService)
         {
-            this.MatchesService = matchesService;
+            this.TeamsService = teamsService;
             this.JsonSettings = new JsonSerializerSettings { ContractResolver = BaseFirstContractResolver.Instance };
         }
 
@@ -25,12 +25,12 @@ namespace Mulder.Mobile.Api.Controllers
         {
             try
             {
-                var matches = this.MatchesService.GetMatches();
-                return Json(new JsonMobileResult(matches), this.JsonSettings);
+                var teams = this.TeamsService.GetTeams();
+                return Json(new JsonMobileResult(teams), this.JsonSettings);
             }
            catch (Exception ex)
             {
-                string errorMessage = "Cannot get matches info. Please try again later.";
+                string errorMessage = "Cannot get teams info. Please try again later.";
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }
@@ -40,12 +40,12 @@ namespace Mulder.Mobile.Api.Controllers
         {
             try
             {
-                var match = this.MatchesService.GetMatch(id);
-                return Json(new JsonMobileResult(match), this.JsonSettings);
+                var team = this.TeamsService.GetTeam(id);
+                return Json(new JsonMobileResult(team), this.JsonSettings);
             }
             catch (Exception ex)
             {
-                string errorMessage = "Cannot get match details info. Please try again later.";
+                string errorMessage = "Cannot get team details info. Please try again later.";
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }

@@ -99,7 +99,7 @@ namespace Mulder.Mobile.Api.Tests.Services
 
             ///act
             var service = new MatchesService(mockContext.Object);
-            var result = service.GetMatch("5");
+            var result = service.GetMatch(5);
 
             //assert
             Assert.IsTrue(result.Players[0].PlayerNick == "Sopel");

@@ -20,7 +20,7 @@ namespace Mulder.Mobile.Api.Services
         {
             var matches = this.Context.Matches.Select(x => new MatchInfo
             {
-                Id = x.Id.ToString(),
+                Id = x.Id,
                 Location = x.Location,
                 Year = x.Year.ToString(),
                 ScoreInfo = this.GetScoreInfo(x.MatchesScore)
@@ -29,15 +29,15 @@ namespace Mulder.Mobile.Api.Services
             return matches;
         }
 
-        public MatchDetailsInfo GetMatch(string matchId)
+        public MatchDetailsInfo GetMatch(int matchId)
         {
             var match = this.Context.Matches
-                .Where(x => x.Id == Convert.ToInt32(matchId))
+                .Where(x => x.Id == matchId)
                 .Include(ml => ml.MatchesLineUp)
                 .ThenInclude(p => p.Player)
                 .Select(m => new MatchDetailsInfo
                 {
-                    Id = m.Id.ToString(),
+                    Id = m.Id,
                     Location = m.Location,
                     Address = m.Address,
                     Date = m.Date,
@@ -45,9 +45,9 @@ namespace Mulder.Mobile.Api.Services
                     ScoreInfo = this.GetScoreInfo(m.MatchesScore),
                     Players = m.MatchesLineUp.Select(p => new PlayerMatchInfo
                     {
-                        PlayerId = p.PlayerId.ToString(),
+                        PlayerId = p.PlayerId,
                         PlayerNick = p.Player.NickName,
-                        TeamId = p.TeamId.ToString(),
+                        TeamId = p.TeamId,
                         RedCard = p.RedCard,
                         YellowCard = p.YellowCard,
                         ManOfTheMatch = p.ManOfTheMatch,
@@ -55,7 +55,7 @@ namespace Mulder.Mobile.Api.Services
                     }).ToList(),
                     Spectators = m.MatchesSpectators.Select(s => new SpectatorInfo
                     {
-                        Id = s.Id.ToString(),
+                        Id = s.Id,
                         Name = s.Spectator.Name
                     }).ToList()
                 }).SingleOrDefault();
@@ -67,13 +67,14 @@ namespace Mulder.Mobile.Api.Services
         {
             var scoreInfo = new ScoreInfo
             {
-                Team1Id = matchesScore.ElementAt(0)?.TeamId.ToString(),
-                Team1HalfTimeScore = matchesScore.ElementAt(0)?.HalfTimeScore.ToString(),
-                Team1Score = matchesScore.ElementAt(0)?.FullTimeScore.ToString(),
-                Team2Id = matchesScore.ElementAt(1)?.TeamId.ToString(),
-                Team2HalfTimeScore = matchesScore.ElementAt(1)?.HalfTimeScore.ToString(),
-                Team2Score = matchesScore.ElementAt(1)?.FullTimeScore.ToString()
+                Team1Id = matchesScore.ElementAt(0).TeamId,
+                Team1HalfTimeScore = matchesScore.ElementAt(0).HalfTimeScore.ToString(),
+                Team1Score = matchesScore.ElementAt(0).FullTimeScore.ToString(),
+                Team2Id = matchesScore.ElementAt(1).TeamId,
+                Team2HalfTimeScore = matchesScore.ElementAt(1).HalfTimeScore.ToString(),
+                Team2Score = matchesScore.ElementAt(1).FullTimeScore.ToString()
             };
+
             return scoreInfo;
         }
 
@@ -83,6 +84,7 @@ namespace Mulder.Mobile.Api.Services
             {
                 Minute = g.Minute != null ? g.Minute.ToString() : string.Empty
             }).ToList();
+
             return goals;
         }
     }
