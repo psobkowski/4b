@@ -15,7 +15,7 @@ namespace Mulder.Mobile.Api.Tests.Controllers
     public class MatchesControllerTests
     {
         [TestMethod]
-        public void GetMatchesTest_CheckResultType()
+        public void GetMatchesTest_Check_Result_Type()
         {
             // arrange
             var matches = new List<MatchInfo>
