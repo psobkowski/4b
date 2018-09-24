@@ -52,6 +52,11 @@ namespace Mulder.Mobile.Api.Services
                         YellowCard = p.YellowCard,
                         ManOfTheMatch = p.ManOfTheMatch,
                         Goals = this.GetGoals(p.PlayersScore)
+                    }).ToList(),
+                    Spectators = m.MatchesSpectators.Select(s => new SpectatorInfo
+                    {
+                        Id = s.Id.ToString(),
+                        Name = s.Spectator.Name
                     }).ToList()
                 }).SingleOrDefault();
 
