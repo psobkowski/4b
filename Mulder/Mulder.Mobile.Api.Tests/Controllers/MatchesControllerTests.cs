@@ -15,7 +15,7 @@ namespace Mulder.Mobile.Api.Tests.Controllers
     public class MatchesControllerTests
     {
         [TestMethod]
-        public void GetTest_CheckResultType()
+        public void GetMatchesTest_CheckResultType()
         {
             // arrange
             var matches = new List<MatchInfo>
@@ -49,13 +49,45 @@ namespace Mulder.Mobile.Api.Tests.Controllers
             var controller = new MatchesController(mockService.Object);
 
             //act
-            var results = controller.Get();
+            var result = controller.Get();
 
             //assert
-            Assert.IsInstanceOfType(results, typeof(JsonResult));
-            Assert.IsInstanceOfType(results.Value, typeof(JsonMobileResult));
-            Assert.IsInstanceOfType(((JsonMobileResult)results.Value).Data, typeof(List<MatchInfo>));
-            Assert.IsTrue(((JsonMobileResult)results.Value).Success);
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            Assert.IsInstanceOfType(result.Value, typeof(JsonMobileResult));
+            Assert.IsInstanceOfType(((JsonMobileResult)result.Value).Data, typeof(List<MatchInfo>));
+            Assert.IsTrue(((JsonMobileResult)result.Value).Success);
+        }
+
+        [TestMethod]
+        public void GetMatch_Check_If_Player_Goals_Loaded()
+        {
+            //arrange
+            var match = new MatchDetailsInfo
+            {
+                Id = "5",
+                Players = new List<PlayerMatchInfo>
+                {
+                    new PlayerMatchInfo{
+                        PlayerId = "2",
+                        Goals = new List<GoalInfo> { new GoalInfo {  Minute = "65" } }
+                    }
+                }
+            };
+
+            var mockService = new Mock<IMatchesService>();
+            mockService.Setup(x => x.GetMatch("5")).Returns(match);
+            var controller = new MatchesController(mockService.Object);
+
+            //act
+            var result = controller.Get("5");
+
+            //assert
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            Assert.IsInstanceOfType(result.Value, typeof(JsonMobileResult));
+            Assert.IsInstanceOfType(((JsonMobileResult)result.Value).Data, typeof(MatchDetailsInfo));
+            Assert.IsTrue(((JsonMobileResult)result.Value).Success);
+
+            Assert.IsTrue(((MatchDetailsInfo)((JsonMobileResult)result.Value).Data).Players[0].Goals[0].Minute == "65");
         }
     }
 }

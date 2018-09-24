@@ -31,37 +31,31 @@ namespace Mulder.Mobile.Api.Services
 
         public MatchDetailsInfo GetMatch(string matchId)
         {
-            int id = Convert.ToInt32(matchId);
-            var players = this.GetPlayers(id);
-
-            var match = this.Context.Matches.Where(x => x.Id == id).Select(m =>
-            new MatchDetailsInfo
-            {
-                Id = m.Id.ToString(),
-                Location = m.Location,
-                Address = m.Address,
-                Date = m.Date,
-                Year = m.Year.ToString(),
-                ScoreInfo = this.GetScoreInfo(m.MatchesScore),
-                Players = players
-            }).SingleOrDefault();
+            var match = this.Context.Matches
+                .Where(x => x.Id == Convert.ToInt32(matchId))
+                .Include(ml => ml.MatchesLineUp)
+                .ThenInclude(p => p.Player)
+                .Select(m => new MatchDetailsInfo
+                {
+                    Id = m.Id.ToString(),
+                    Location = m.Location,
+                    Address = m.Address,
+                    Date = m.Date,
+                    Year = m.Year.ToString(),
+                    ScoreInfo = this.GetScoreInfo(m.MatchesScore),
+                    Players = m.MatchesLineUp.Select(p => new PlayerMatchInfo
+                    {
+                        PlayerId = p.PlayerId.ToString(),
+                        PlayerNick = p.Player.NickName,
+                        TeamId = p.TeamId.ToString(),
+                        RedCard = p.RedCard,
+                        YellowCard = p.YellowCard,
+                        ManOfTheMatch = p.ManOfTheMatch,
+                        Goals = this.GetGoals(p.PlayersScore)
+                    }).ToList()
+                }).SingleOrDefault();
 
             return match;
-        }
-
-        private List<PlayerMatchInfo> GetPlayers(int matchId)
-        {
-            var players = this.Context.MatchesLineUp.Where(x => x.MatchId == matchId).Select(p => new PlayerMatchInfo
-            {
-                PlayerId = p.PlayerId.ToString(),
-                PlayerNick = p.Player.NickName,
-                TeamId = p.TeamId.ToString(),
-                RedCard = p.RedCard,
-                YellowCard = p.YellowCard,
-                ManOfTheMatch = p.ManOfTheMatch,
-                Goals = this.GetGoals(p.PlayersScore)
-            }).ToList();
-            return players;
         }
 
         private ScoreInfo GetScoreInfo(IEnumerable<MatchesScore> matchesScore)
