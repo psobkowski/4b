@@ -5,7 +5,7 @@ namespace Mulder.Mobile.Api.Services
 {
     public interface ITeamsService
     {
-        TeamInfo GetTeam(int id);
+        TeamDetailsInfo GetTeam(int id);
         List<TeamInfo> GetTeams();
     }
 }

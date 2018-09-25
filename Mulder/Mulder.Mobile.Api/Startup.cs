@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Mulder.DataAccess.Models;
 using Mulder.Mobile.Api.Services;
 
@@ -34,6 +28,8 @@ namespace Mulder.Mobile.Api
                     options.UseSqlServer(@"Server=SPN-PC002;Database=Mulder;User Id=mul_owner;Password=mu_owner;");
                 });
             
+            services.AddScoped<ITeamsService, TeamsService>();
+            services.AddScoped<IPlayersService, PlayersService>();
             services.AddScoped<IMatchesService, MatchesService>();
         }
 

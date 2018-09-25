@@ -1,13 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Mulder.Mobile.Api.Controllers;
-using Mulder.Mobile.Api.Services;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Mulder.DataAccess.Models;
 using Mulder.Mobile.Api.Domain;
+using Mulder.Mobile.Api.Services;
+using System.Collections.Generic;
 
 namespace Mulder.Mobile.Api.Tests.Controllers
 {
@@ -27,8 +24,11 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                     Year = "2018",
                     ScoreInfo = new ScoreInfo
                     {
-                        Team1Id = 1, Team1HalfTimeScore = "2", Team1Score = "6",
-                        Team2Id = 2, Team2HalfTimeScore = "1", Team2Score = "2"
+                        ScoreDetailsInfo = new List<ScoreDetailsInfo>
+                        {
+                        new ScoreDetailsInfo { TeamId = 1, HalfTimeScore = 2, Score = 6 },
+                        new ScoreDetailsInfo { TeamId = 2, HalfTimeScore = 1, Score = 2 }
+                        }
                     }
                 },
                 new MatchInfo
@@ -36,11 +36,15 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                     Id = 5,
                     Location = "Olsztyn",
                     Year = "2012",
-                    ScoreInfo = new ScoreInfo
+                   ScoreInfo = new ScoreInfo
                     {
-                        Team1Id = 1, Team1HalfTimeScore = "3", Team1Score = "5",
-                        Team2Id = 2, Team2HalfTimeScore = "2", Team2Score = "3"
-                    }
+                        ScoreDetailsInfo = new List<ScoreDetailsInfo>
+                        {
+                        new ScoreDetailsInfo { TeamId = 1, HalfTimeScore = 3, Score = 5 },
+                        new ScoreDetailsInfo { TeamId = 2, HalfTimeScore = 2, Score = 3 }
+                        }
+                   }
+
                 }
             };
 

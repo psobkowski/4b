@@ -1,7 +1,6 @@
-﻿using Mulder.DataAccess.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Mulder.DataAccess.Models;
 using Mulder.Mobile.Api.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +22,7 @@ namespace Mulder.Mobile.Api.Services
                 Id = x.Id,
                 Location = x.Location,
                 Year = x.Year.ToString(),
-                ScoreInfo = this.GetScoreInfo(x.MatchesScore)
+                ScoreInfo = new ScoreInfo(x.MatchesScore)
             }).ToList();
 
             return matches;
@@ -42,7 +41,7 @@ namespace Mulder.Mobile.Api.Services
                     Address = m.Address,
                     Date = m.Date,
                     Year = m.Year.ToString(),
-                    ScoreInfo = this.GetScoreInfo(m.MatchesScore),
+                    ScoreInfo = new ScoreInfo(m.MatchesScore),
                     Players = m.MatchesLineUp.Select(p => new PlayerMatchInfo
                     {
                         PlayerId = p.PlayerId,
@@ -58,24 +57,9 @@ namespace Mulder.Mobile.Api.Services
                         Id = s.Id,
                         Name = s.Spectator.Name
                     }).ToList()
-                }).SingleOrDefault();
+                }).Single();
 
             return match;
-        }
-
-        private ScoreInfo GetScoreInfo(IEnumerable<MatchesScore> matchesScore)
-        {
-            var scoreInfo = new ScoreInfo
-            {
-                Team1Id = matchesScore.ElementAt(0).TeamId,
-                Team1HalfTimeScore = matchesScore.ElementAt(0).HalfTimeScore.ToString(),
-                Team1Score = matchesScore.ElementAt(0).FullTimeScore.ToString(),
-                Team2Id = matchesScore.ElementAt(1).TeamId,
-                Team2HalfTimeScore = matchesScore.ElementAt(1).HalfTimeScore.ToString(),
-                Team2Score = matchesScore.ElementAt(1).FullTimeScore.ToString()
-            };
-
-            return scoreInfo;
         }
 
         private List<GoalInfo> GetGoals(IEnumerable<PlayersScore> playersScore)
