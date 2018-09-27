@@ -15,19 +15,6 @@ namespace Mulder.Mobile.Api.Services
             this.Context = context;
         }
 
-        public List<PlayerInfo> GetPlayers()
-        {
-            var players = this.Context.Players.Select(p => new PlayerInfo
-            {
-                Id = p.Id,
-                TeamId = p.CurrentTeamId,
-                Number = p.Number,
-                Nick = p.NickName
-            }).ToList();
-
-            return players;
-        }
-
         public PlayerDetailsInfo GetPlayer(int playerId)
         {
             var player = this.Context.Players
@@ -46,8 +33,8 @@ namespace Mulder.Mobile.Api.Services
                         MatchId = pm.MatchId,
                         MatchYear = pm.Match.Year.ToString(),
                         Goals = pm.PlayersScore.Count(),
-                        MatchResult = MatchResultHelper.Result(pm.Match.MatchesScore.Single(ms => ms.TeamId == pm.TeamId).FullTimeScore,
-                                                               pm.Match.MatchesScore.Single(ms => ms.TeamId != pm.TeamId).FullTimeScore),
+                        MatchResult = MatchResultHelper.Result(pm.Match.MatchesScore.First(ms => ms.TeamId == pm.TeamId).FullTimeScore,
+                                                               pm.Match.MatchesScore.First(ms => ms.TeamId != pm.TeamId).FullTimeScore),
                         ManOfTheMatch = pm.ManOfTheMatch,
                         YellowCard = pm.YellowCard
                     }).ToList()

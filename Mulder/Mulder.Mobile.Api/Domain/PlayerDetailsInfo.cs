@@ -7,6 +7,7 @@ namespace Mulder.Mobile.Api.Domain
     public class PlayerDetailsInfo : PlayerInfo
     {
         public string Name { get; set; }
+        public int TeamId { get; set; }
         public bool Guest { get; set; }
         public string ManOfTheMatch { get; set; }
         public string YellowCards { get; set; }

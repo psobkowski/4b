@@ -10,7 +10,7 @@ namespace Mulder.Mobile.Api.Domain
         {
             get
             {
-                return this.Matches.Sum(m => m.ScoreInfo.ScoreDetailsInfo.Single(x => x.TeamId == this.Id).Score).ToString();
+                return this.Matches.Sum(m => m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId == this.Id).Score).ToString();
             }
         }
 
@@ -18,8 +18,8 @@ namespace Mulder.Mobile.Api.Domain
         {
             get
             {
-                return this.Matches.Count(m => m.ScoreInfo.ScoreDetailsInfo.Single(x => x.TeamId == this.Id).Score
-                                             > m.ScoreInfo.ScoreDetailsInfo.Single(x => x.TeamId != this.Id).Score).ToString();
+                return this.Matches.Count(m => m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId == this.Id).Score
+                                             > m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId != this.Id).Score).ToString();
             }
         }
 
@@ -27,21 +27,31 @@ namespace Mulder.Mobile.Api.Domain
         {
             get
             {
-                return this.Matches.Count(m => m.ScoreInfo.ScoreDetailsInfo.Single(x => x.TeamId == this.Id).Score
-                                             < m.ScoreInfo.ScoreDetailsInfo.Single(x => x.TeamId != this.Id).Score).ToString();
+                return this.Matches.Count(m => m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId == this.Id).Score
+                                             < m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId != this.Id).Score).ToString();
             }
         }
         public string Draws
         {
             get
             {
-                return this.Matches.Count(m => m.ScoreInfo.ScoreDetailsInfo.Single(x => x.TeamId == this.Id).Score
-                                            == m.ScoreInfo.ScoreDetailsInfo.Single(x => x.TeamId != this.Id).Score).ToString();
+                return this.Matches.Count(m => m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId == this.Id).Score
+                                            == m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId != this.Id).Score).ToString();
             }
         }
 
         public string YellowCards { get; set; }
         public string ManOfTheMatch { get; set; }
+
+        public MatchInfo BestGame
+        {
+            get
+            {
+                return this.Matches.OrderByDescending(m => m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId == this.Id).Score 
+                                                         - m.ScoreInfo.ScoreDetailsInfo.First(x => x.TeamId != this.Id).Score).First();
+            }
+        }
+
         public List<PlayerInfo> Players { get; set; }
 
         [JsonIgnore]

@@ -8,29 +8,29 @@ using System;
 namespace Mulder.Mobile.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class PlayersController  : Controller
+    public class StatsController  : Controller
     {
-        private IPlayersService PlayersService { get; set; }
+        private IStatsService StatsService { get; set; }
 
         private JsonSerializerSettings JsonSettings { get; set; }
 
-        public PlayersController(IPlayersService playersService)
+        public StatsController(IStatsService statsService)
         {
-            this.PlayersService = playersService;
+            this.StatsService = statsService;
             this.JsonSettings = new JsonSerializerSettings { ContractResolver = BaseFirstContractResolver.Instance };
         }
 
-        [HttpGet("{id}")]
-        public JsonResult Get(int id)
+        [HttpGet("TopScorers")]
+        public JsonResult TopScorers()
         {
             try
             {
-                var player = this.PlayersService.GetPlayer(id);
-                return Json(new JsonMobileResult(player), this.JsonSettings);
+                var players = this.StatsService.TopScorers();
+                return Json(new JsonMobileResult(players), this.JsonSettings);
             }
-            catch (Exception ex)
+           catch (Exception ex)
             {
-                string errorMessage = "Cannot get player details info. Please try again later.";
+                string errorMessage = "Cannot get top scorers info. Please try again later.";
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }

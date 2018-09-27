@@ -47,7 +47,6 @@ namespace Mulder.Mobile.Api.Services
                     Players = t.Players.Select(p => new PlayerInfo
                                 {
                                     Id = p.Id,
-                                    TeamId = p.CurrentTeamId,
                                     Number = p.Number,
                                     Nick = p.NickName
                                 }).ToList()

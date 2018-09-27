@@ -3,8 +3,8 @@ using Mulder.Mobile.Api.Domain;
 
 namespace Mulder.Mobile.Api.Services
 {
-    public interface IPlayersService
+    public interface IStatsService
     {
-        PlayerDetailsInfo GetPlayer(int playerId);
+        List<PlayerGoalsInfo> TopScorers();
     }
 }
