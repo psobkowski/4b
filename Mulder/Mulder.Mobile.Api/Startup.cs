@@ -52,16 +52,7 @@ namespace Mulder.Mobile.Api
                 options.DefaultChallengeScheme = "Jwt";
             }).AddJwtBearer("Jwt", options =>
             {
-                var securityKey = Encoding.UTF8.GetBytes(this.Secrets.GetValue<string>("SecurityKey"));
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(securityKey),
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5)
-                };
+                options.TokenValidationParameters = this.CreateTokenValidationParameters(this.Secrets.GetValue<string>("SecurityKey"));
             });
 
             services.AddEntityFrameworkSqlServer().AddDbContext<MulderContext>(options =>
@@ -86,6 +77,22 @@ namespace Mulder.Mobile.Api
 
             app.UseAuthentication();
             app.UseMvc();
+        }
+
+        private TokenValidationParameters CreateTokenValidationParameters(string securityKey)
+        {
+            var key = Encoding.UTF8.GetBytes(securityKey);
+
+            TokenValidationParameters tvp = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(5)
+            };
+            return tvp;
         }
     }
 }
