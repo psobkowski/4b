@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Mulder.Mobile.Api.Domain
 {
-    public class PlayerGoalsInfo : PlayerInfo
+    public class PlayerStatsInfo : PlayerInfo
     {
-        public int Goals { get; set; }
+        public int Stats { get; set; }
     }
 }

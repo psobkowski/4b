@@ -31,7 +31,8 @@ namespace Mulder.Mobile.Api
             services.AddScoped<ITeamsService, TeamsService>();
             services.AddScoped<IPlayersService, PlayersService>();
             services.AddScoped<IMatchesService, MatchesService>();
-            services.AddScoped<IStatsService, StatsService>();
+            services.AddScoped<IPlayersStatsService, PlayersStatsService>();
+            services.AddScoped<IMatchesStatsService, MatchesStatsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
