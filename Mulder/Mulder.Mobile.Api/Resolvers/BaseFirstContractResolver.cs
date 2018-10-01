@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Mulder.Mobile.Api.ContractResolvers
+namespace Mulder.Mobile.Api.Resolvers
 {
     public class BaseFirstContractResolver : DefaultContractResolver
     {

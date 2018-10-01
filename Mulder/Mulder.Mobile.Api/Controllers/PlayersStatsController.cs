@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Mulder.Mobile.Api.ContractResolvers;
+using Mulder.Mobile.Api.Resolvers;
 using Mulder.Mobile.Api.Domain;
 using Mulder.Mobile.Api.Services;
 using Newtonsoft.Json;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Mulder.Mobile.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class PlayersStatsController  : Controller
     {
