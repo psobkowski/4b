@@ -24,14 +24,6 @@ namespace Mulder.DataAccess.Models
         public virtual DbSet<Spectators> Spectators { get; set; }
         public virtual DbSet<Teams> Teams { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=SPN-PC002;Database=Mulder;user id=sa;password=sa");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -53,5 +53,13 @@ namespace Mulder.Mobile.Api.Domain
                 return string.Format("{0:0.0}", this.MatchesCount > 0 ? (double)this.GoalsSum / this.MatchesCount : 0);
             }
         }
+
+        public PlayerMatchStats BestGame
+        {
+            get
+            {
+                return this.PlayerMatchStats.OrderByDescending(g => g.Goals).ThenByDescending(g => g.MatchResult).ThenByDescending(g => g.MatchGoals).First();
+            }
+        }
     }
 }

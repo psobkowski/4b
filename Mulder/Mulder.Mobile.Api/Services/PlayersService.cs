@@ -33,6 +33,8 @@ namespace Mulder.Mobile.Api.Services
                         MatchId = pm.MatchId,
                         MatchYear = pm.Match.Year.ToString(),
                         Goals = pm.PlayersScore.Count(),
+                        MatchGoals = pm.Match.MatchesScore.First(ms => ms.TeamId == pm.TeamId).FullTimeScore +
+                                     pm.Match.MatchesScore.First(ms => ms.TeamId != pm.TeamId).FullTimeScore,
                         MatchResult = MatchResultHelper.Result(pm.Match.MatchesScore.First(ms => ms.TeamId == pm.TeamId).FullTimeScore,
                                                                pm.Match.MatchesScore.First(ms => ms.TeamId != pm.TeamId).FullTimeScore),
                         ManOfTheMatch = pm.ManOfTheMatch,
