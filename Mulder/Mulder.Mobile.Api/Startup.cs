@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Mulder.DataAccess.Models;
 using Mulder.Mobile.Api.Resolvers;
 using Mulder.Mobile.Api.Services;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Text;
 
@@ -35,11 +35,11 @@ namespace Mulder.Mobile.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(x =>
+            services.AddMvc(options =>
             {
                 if (this.Environment.IsDevelopment())
                 {
-                    x.Filters.Add(new AllowAnonymousFilter());
+                    options.Filters.Add(new AllowAnonymousFilter());
                 }
             });
 
@@ -60,6 +60,11 @@ namespace Mulder.Mobile.Api
                 options.UseSqlServer(this.Secrets.GetValue<string>("SqlConnection"));
             });
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Mulder Api", Version = "v1" });
+            });
+
             services.AddScoped<ITeamsService, TeamsService>();
             services.AddScoped<IPlayersService, PlayersService>();
             services.AddScoped<IMatchesService, MatchesService>();
@@ -74,6 +79,13 @@ namespace Mulder.Mobile.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mulder Api V1");
+            });
 
             app.UseAuthentication();
             app.UseMvc();
