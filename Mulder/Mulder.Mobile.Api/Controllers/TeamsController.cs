@@ -5,6 +5,7 @@ using Mulder.Mobile.Api.Domain;
 using Mulder.Mobile.Api.Services;
 using Newtonsoft.Json;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace Mulder.Mobile.Api.Controllers
 {
@@ -12,12 +13,13 @@ namespace Mulder.Mobile.Api.Controllers
     [Route("api/[controller]")]
     public class TeamsController  : Controller
     {
+        private ILogger Logger { get; set; }
         private ITeamsService TeamsService { get; set; }
-
         private JsonSerializerSettings JsonSettings { get; set; }
 
-        public TeamsController(ITeamsService teamsService)
+        public TeamsController(ILogger<TeamsController> logger, ITeamsService teamsService)
         {
+            this.Logger = logger;
             this.TeamsService = teamsService;
             this.JsonSettings = new JsonSerializerSettings { ContractResolver = BaseFirstContractResolver.Instance };
         }
@@ -32,7 +34,8 @@ namespace Mulder.Mobile.Api.Controllers
             }
            catch (Exception ex)
             {
-                string errorMessage = "Cannot get teams info. Please try again later.";
+                var errorMessage = "Cannot get teams info. Please try again later.";
+                this.Logger.LogError(ex, errorMessage);
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }
@@ -47,7 +50,8 @@ namespace Mulder.Mobile.Api.Controllers
             }
             catch (Exception ex)
             {
-                string errorMessage = "Cannot get team details info. Please try again later.";
+                var errorMessage = "Cannot get team details info. Please try again later.";
+                this.Logger.LogError(ex, errorMessage);
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }

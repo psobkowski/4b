@@ -5,6 +5,7 @@ using Mulder.Mobile.Api.Services;
 using Newtonsoft.Json;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Mulder.Mobile.Api.Controllers
 {
@@ -12,12 +13,13 @@ namespace Mulder.Mobile.Api.Controllers
     [Route("api/[controller]")]
     public class PlayersStatsController  : Controller
     {
+        private ILogger Logger { get; set; }
         private IPlayersStatsService PlayersStatsService { get; set; }
-
         private JsonSerializerSettings JsonSettings { get; set; }
 
-        public PlayersStatsController(IPlayersStatsService playersStatsService)
+        public PlayersStatsController(ILogger<PlayersStatsController> logger, IPlayersStatsService playersStatsService)
         {
+            this.Logger = logger;
             this.PlayersStatsService = playersStatsService;
             this.JsonSettings = new JsonSerializerSettings { ContractResolver = BaseFirstContractResolver.Instance };
         }
@@ -33,6 +35,7 @@ namespace Mulder.Mobile.Api.Controllers
            catch (Exception ex)
             {
                 string errorMessage = "Cannot get top scorers info. Please try again later.";
+                this.Logger.LogError(ex, errorMessage);
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }
@@ -48,6 +51,7 @@ namespace Mulder.Mobile.Api.Controllers
             catch (Exception ex)
             {
                 string errorMessage = "Cannot get top caps info. Please try again later.";
+                this.Logger.LogError(ex, errorMessage);
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }
@@ -63,6 +67,7 @@ namespace Mulder.Mobile.Api.Controllers
             catch (Exception ex)
             {
                 string errorMessage = "Cannot get top man of the matach info. Please try again later.";
+                this.Logger.LogError(ex, errorMessage);
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }

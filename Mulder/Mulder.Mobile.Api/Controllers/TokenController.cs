@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Mulder.Mobile.Api.Resolvers;
+using Microsoft.Extensions.Logging;
+using Mulder.Mobile.Api.Services;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Mulder.Mobile.Api.Controllers
 {
@@ -17,43 +13,31 @@ namespace Mulder.Mobile.Api.Controllers
             public string Name { get; set; }
         }
 
-        private IOptions<SecretsResolver> Secrets { get; }
+        private ILogger Logger { get; set; }
+        private ITokenService TokenService { get; set; }
 
-        public TokenController(IOptions<SecretsResolver> secrets)
+        public TokenController(ILogger<TokenController> logger, ITokenService tokenService)
         {
-            this.Secrets = secrets;
+            this.Logger = logger;
+            this.TokenService = tokenService;
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] RequestSource requestSource)
         {
-            var isRequetValid = this.IsRequestSourceValid(requestSource?.Name);
-            if (isRequetValid)
+            try
             {
-                return new ObjectResult(this.GenerateToken(requestSource.Name));
+                if (this.TokenService.IsRequestSourceValid(requestSource?.Name))
+                {
+                    var result = new ObjectResult(this.TokenService.GenerateToken(requestSource.Name));
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Generating token failed.");
             }
             return BadRequest();
-        }
-
-        private bool IsRequestSourceValid(string requestSource)
-        {
-            return requestSource == this.Secrets.Value.RequestSource;
-        }
-
-        private string GenerateToken(string requestSource)
-        {
-            var claims = new Claim[]
-            {
-                new Claim(ClaimTypes.Name, requestSource),
-                new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString()),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Secrets.Value.SecurityKey));
-            var credential = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-            var token = new JwtSecurityToken(credential, new JwtPayload(claims));
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

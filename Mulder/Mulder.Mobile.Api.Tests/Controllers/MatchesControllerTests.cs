@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Mulder.Mobile.Api.Controllers;
@@ -48,9 +49,10 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                 }
             };
 
+            var mockLogger = new Mock<ILogger<MatchesController>>();
             var mockService = new Mock<IMatchesService>();
             mockService.Setup(x => x.GetMatches()).Returns(matches);
-            var controller = new MatchesController(mockService.Object);
+            var controller = new MatchesController(mockLogger.Object, mockService.Object);
 
             //act
             var result = controller.Get();
@@ -78,9 +80,10 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                 }
             };
 
+            var mockLogger = new Mock<ILogger<MatchesController>>();
             var mockService = new Mock<IMatchesService>();
             mockService.Setup(x => x.GetMatch(5)).Returns(match);
-            var controller = new MatchesController(mockService.Object);
+            var controller = new MatchesController(mockLogger.Object, mockService.Object);
 
             //act
             var result = controller.Get(5);

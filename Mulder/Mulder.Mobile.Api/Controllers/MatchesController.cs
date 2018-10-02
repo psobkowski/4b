@@ -5,6 +5,7 @@ using Mulder.Mobile.Api.Services;
 using Newtonsoft.Json;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Mulder.Mobile.Api.Controllers
 {
@@ -12,12 +13,13 @@ namespace Mulder.Mobile.Api.Controllers
     [Route("api/[controller]")]
     public class MatchesController  : Controller
     {
+        private ILogger Logger { get; set; }
         private IMatchesService MatchesService { get; set; }
-
         private JsonSerializerSettings JsonSettings { get; set; }
 
-        public MatchesController(IMatchesService matchesService)
+        public MatchesController(ILogger<MatchesController> logger, IMatchesService matchesService)
         {
+            this.Logger = logger;
             this.MatchesService = matchesService;
             this.JsonSettings = new JsonSerializerSettings { ContractResolver = BaseFirstContractResolver.Instance };
         }
@@ -33,6 +35,7 @@ namespace Mulder.Mobile.Api.Controllers
            catch (Exception ex)
             {
                 string errorMessage = "Cannot get matches info. Please try again later.";
+                this.Logger.LogError(ex, errorMessage);
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }
@@ -48,6 +51,7 @@ namespace Mulder.Mobile.Api.Controllers
             catch (Exception ex)
             {
                 string errorMessage = "Cannot get match details info. Please try again later.";
+                this.Logger.LogError(ex, errorMessage);
                 return Json(new JsonMobileResult(errorMessage), this.JsonSettings);
             }
         }

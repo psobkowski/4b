@@ -65,6 +65,7 @@ namespace Mulder.Mobile.Api
                 c.SwaggerDoc("v1", new Info { Title = "Mulder Api", Version = "v1" });
             });
 
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ITeamsService, TeamsService>();
             services.AddScoped<IPlayersService, PlayersService>();
             services.AddScoped<IMatchesService, MatchesService>();
