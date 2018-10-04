@@ -23,13 +23,10 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                     Id = 4,
                     Location = "Jeziorany",
                     Year = "2018",
-                    ScoreInfo = new ScoreInfo
+                    ScoreInfo = new List<ScoreInfo>
                     {
-                        ScoreDetailsInfo = new List<ScoreDetailsInfo>
-                        {
-                        new ScoreDetailsInfo { TeamId = 1, HalfTimeScore = 2, Score = 6 },
-                        new ScoreDetailsInfo { TeamId = 2, HalfTimeScore = 1, Score = 2 }
-                        }
+                        new ScoreInfo { TeamId = 1, HalfTimeScore = 2, FullTimeScore = 6 },
+                        new ScoreInfo { TeamId = 2, HalfTimeScore = 1, FullTimeScore = 2 }
                     }
                 },
                 new MatchInfo
@@ -37,15 +34,11 @@ namespace Mulder.Mobile.Api.Tests.Controllers
                     Id = 5,
                     Location = "Olsztyn",
                     Year = "2012",
-                   ScoreInfo = new ScoreInfo
+                    ScoreInfo = new List<ScoreInfo>
                     {
-                        ScoreDetailsInfo = new List<ScoreDetailsInfo>
-                        {
-                        new ScoreDetailsInfo { TeamId = 1, HalfTimeScore = 3, Score = 5 },
-                        new ScoreDetailsInfo { TeamId = 2, HalfTimeScore = 2, Score = 3 }
-                        }
-                   }
-
+                        new ScoreInfo { TeamId = 1, HalfTimeScore = 3, FullTimeScore = 5 },
+                        new ScoreInfo { TeamId = 2, HalfTimeScore = 2, FullTimeScore = 3 }
+                    }
                 }
             };
 

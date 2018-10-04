@@ -57,10 +57,10 @@ namespace Mulder.Mobile.Api.Tests.Services
 
             //assert
             Assert.IsTrue(result.Count == 2);
-            Assert.IsTrue(result[0].ScoreInfo.ScoreDetailsInfo[0].Score == 6);
-            Assert.IsTrue(result[0].ScoreInfo.ScoreDetailsInfo[1].Score == 2);
-            Assert.IsTrue(result[1].ScoreInfo.ScoreDetailsInfo[0].Score == 2);
-            Assert.IsTrue(result[1].ScoreInfo.ScoreDetailsInfo[1].Score == 4);
+            Assert.IsTrue(result[0].ScoreInfo[0].FullTimeScore == 6);
+            Assert.IsTrue(result[0].ScoreInfo[1].FullTimeScore == 2);
+            Assert.IsTrue(result[1].ScoreInfo[0].FullTimeScore == 2);
+            Assert.IsTrue(result[1].ScoreInfo[1].FullTimeScore == 4);
         }
 
         [TestMethod]

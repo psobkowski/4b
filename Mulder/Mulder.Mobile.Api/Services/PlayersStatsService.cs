@@ -17,45 +17,52 @@ namespace Mulder.Mobile.Api.Services
 
         public List<PlayerStatsInfo> TopScorers()
         {
-            var players = this.Context.Players
-                .Include(ml => ml.MatchesLineUp)
-                .Select(p => new PlayerStatsInfo
+            var players = this.Context.PlayersScore
+                .GroupBy(x => new { x.MatchesLineUp.PlayerId, x.MatchesLineUp.Player.NickName, x.MatchesLineUp.Player.Number },
+                (key, gr) => new PlayerStatsInfo
                 {
-                    Id = p.Id,
-                    Nick = p.NickName,
-                    Number = p.Number,
-                    Stats = p.MatchesLineUp.Sum(ml => ml.PlayersScore.Count)
-                }).Where(g => g.Stats > 0).OrderByDescending(o => o.Stats).ToList();
+                    Id = key.PlayerId,
+                    Nick = key.NickName,
+                    Number = key.Number,
+                    Stats = gr.Count()
+                })
+                .OrderByDescending(o => o.Stats)
+                .ToList();
 
             return players;
         }
 
         public List<PlayerStatsInfo> TopCaps()
         {
-            var players = this.Context.Players
-                .Include(ml => ml.MatchesLineUp)
-                .Select(p => new PlayerStatsInfo
+            var players = this.Context.MatchesLineUp
+                .GroupBy(x => new { x.PlayerId, x.Player.NickName, x.Player.Number },
+                (key, gr) => new PlayerStatsInfo
                 {
-                    Id = p.Id,
-                    Nick = p.NickName,
-                    Number = p.Number,
-                    Stats = p.MatchesLineUp.Count()
-                }).Where(g => g.Stats > 0).OrderByDescending(o => o.Stats).ToList();
+                    Id = key.PlayerId,
+                    Nick = key.NickName,
+                    Number = key.Number,
+                    Stats = gr.Count()
+                })
+                .OrderByDescending(o => o.Stats)
+                .ToList();
 
             return players;
         }
 
         public List<PlayerStatsInfo> TopMvps()
         {
-            var players = this.Context.Players
-                .Include(ml => ml.MatchesLineUp)
-                .Select(p => new PlayerStatsInfo
+            var players = this.Context.MatchesLineUp
+                .Where(x => x.ManOfTheMatch)
+                .GroupBy(x => new { x.PlayerId, x.Player.NickName, x.Player.Number },
+                (key, gr) => new PlayerStatsInfo
                 {
-                    Id = p.Id,
-                    Nick = p.NickName,
-                    Number = p.Number,
-                    Stats = p.MatchesLineUp.Count(ml => ml.ManOfTheMatch)
-                }).Where(g => g.Stats > 0).OrderByDescending(o => o.Stats).ToList();
+                    Id = key.PlayerId,
+                    Nick = key.NickName,
+                    Number = key.Number,
+                    Stats = gr.Count()
+                })
+                .OrderByDescending(o => o.Stats)
+                .ToList();
 
             return players;
         }

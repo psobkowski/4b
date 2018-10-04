@@ -55,7 +55,7 @@ namespace Mulder.Mobile.Api
                 options.TokenValidationParameters = this.CreateTokenValidationParameters(this.Secrets.GetValue<string>("SecurityKey"));
             });
 
-            services.AddEntityFrameworkSqlServer().AddDbContext<MulderContext>(options =>
+            services.AddDbContext<MulderContext>(options =>
             {
                 options.UseSqlServer(this.Secrets.GetValue<string>("SqlConnection"));
             });

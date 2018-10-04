@@ -22,7 +22,12 @@ namespace Mulder.Mobile.Api.Services
                 Id = x.Id,
                 Location = x.Location,
                 Year = x.Year.ToString(),
-                ScoreInfo = new ScoreInfo(x.MatchesScore)
+                ScoreInfo = x.MatchesScore.Select(ms => new ScoreInfo
+                    {
+                        TeamId = ms.TeamId,
+                        FullTimeScore = ms.FullTimeScore,
+                        HalfTimeScore = ms.HalfTimeScore,
+                    }).ToList()
             }).ToList();
 
             return matches;
@@ -41,7 +46,12 @@ namespace Mulder.Mobile.Api.Services
                     Address = m.Address,
                     Date = m.Date,
                     Year = m.Year.ToString(),
-                    ScoreInfo = new ScoreInfo(m.MatchesScore),
+                    ScoreInfo = m.MatchesScore.Select(ms => new ScoreInfo
+                    {
+                        TeamId = ms.TeamId,
+                        FullTimeScore = ms.FullTimeScore,
+                        HalfTimeScore = ms.HalfTimeScore,
+                    }).ToList(),
                     Players = m.MatchesLineUp.Select(p => new PlayerMatchInfo
                     {
                         PlayerId = p.PlayerId,
