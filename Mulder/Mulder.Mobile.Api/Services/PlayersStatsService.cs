@@ -26,7 +26,7 @@ namespace Mulder.Mobile.Api.Services
                     Number = key.Number,
                     Stats = gr.Count()
                 })
-                .OrderByDescending(o => o.Stats)
+                .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
                 .ToList();
 
             return players;
@@ -43,7 +43,7 @@ namespace Mulder.Mobile.Api.Services
                     Number = key.Number,
                     Stats = gr.Count()
                 })
-                .OrderByDescending(o => o.Stats)
+                .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
                 .ToList();
 
             return players;
@@ -61,7 +61,7 @@ namespace Mulder.Mobile.Api.Services
                     Number = key.Number,
                     Stats = gr.Count()
                 })
-                .OrderByDescending(o => o.Stats)
+                .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
                 .ToList();
 
             return players;
