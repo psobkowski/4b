@@ -17,69 +17,96 @@ namespace Mulder.Mobile.Api.Services
 
         public List<MatchInfo> GetMatches()
         {
-            var matches = this.Context.Matches.Select(x => new MatchInfo
-            {
-                Id = x.Id,
-                Location = x.Location,
-                Year = x.Year.ToString(),
-                ScoreInfo = x.MatchesScore.Select(ms => new ScoreInfo
-                    {
-                        TeamId = ms.TeamId,
-                        FullTimeScore = ms.FullTimeScore,
-                        HalfTimeScore = ms.HalfTimeScore,
-                    }).ToList()
-            }).ToList();
+            var matchesSql = this.Context.MatchesScore
+                .GroupBy(x => new { x.MatchId, x.Match.Location, x.Match.Year, x.TeamId, x.HalfTimeScore, x.FullTimeScore },
+                (key, gr) => new { key.MatchId, key.Location, key.Year, key.TeamId, key.HalfTimeScore, key.FullTimeScore })
+                .ToList();
+
+            var matches = matchesSql.GroupBy(x => new { x.MatchId, x.Location, x.Year },
+               (key, gr) => new MatchInfo
+               {
+                   Id = key.MatchId,
+                   Location = key.Location,
+                   Year = key.Year.ToString(),
+                   ScoreInfo = gr.Select(si => new ScoreInfo
+                   {
+                       TeamId = si.TeamId,
+                       HalfTimeScore = si.HalfTimeScore,
+                       FullTimeScore = si.FullTimeScore
+                   }).ToList()
+               })
+               .ToList();
 
             return matches;
         }
 
         public MatchDetailsInfo GetMatch(int matchId)
         {
-            var match = this.Context.Matches
-                .Where(x => x.Id == matchId)
-                .Include(ml => ml.MatchesLineUp)
-                .ThenInclude(p => p.Player)
-                .Select(m => new MatchDetailsInfo
-                {
-                    Id = m.Id,
-                    Location = m.Location,
-                    Address = m.Address,
-                    Date = m.Date,
-                    Year = m.Year.ToString(),
-                    ScoreInfo = m.MatchesScore.Select(ms => new ScoreInfo
-                    {
-                        TeamId = ms.TeamId,
-                        FullTimeScore = ms.FullTimeScore,
-                        HalfTimeScore = ms.HalfTimeScore,
-                    }).ToList(),
-                    Players = m.MatchesLineUp.Select(p => new PlayerMatchInfo
-                    {
-                        PlayerId = p.PlayerId,
-                        PlayerNick = p.Player.NickName,
-                        TeamId = p.TeamId,
-                        RedCard = p.RedCard,
-                        YellowCard = p.YellowCard,
-                        ManOfTheMatch = p.ManOfTheMatch,
-                        Goals = this.GetGoals(p.PlayersScore)
-                    }).ToList(),
-                    Spectators = m.MatchesSpectators.Select(s => new SpectatorInfo
-                    {
-                        Id = s.Id,
-                        Name = s.Spectator.Name
-                    }).ToList()
-                }).Single();
+            var spectators = this.GetSpectators(matchId);
+            var players = this.GetPlayers(matchId);
+
+            var matchesSql = this.Context.MatchesScore
+                .Where(x => x.MatchId == matchId)
+                .GroupBy(x => new { x.MatchId, x.Match.Location, x.Match.Year, x.Match.Address, x.Match.Date, x.TeamId, x.HalfTimeScore, x.FullTimeScore },
+                    (key, gr) => new { key.MatchId, key.Location, key.Year, key.Address, key.Date, key.TeamId, key.HalfTimeScore, key.FullTimeScore })
+                .ToList();
+
+            var match = matchesSql.GroupBy(x => new { x.MatchId, x.Location, x.Address, x.Date, x.Year },
+               (key, gr) => new MatchDetailsInfo
+               {
+                   Id = key.MatchId,
+                   Location = key.Location,
+                   Year = key.Year.ToString(),
+                   Address = key.Address,
+                   Date = key.Date,
+                   ScoreInfo = gr.Select(si => new ScoreInfo
+                   {
+                       TeamId = si.TeamId,
+                       HalfTimeScore = si.HalfTimeScore,
+                       FullTimeScore = si.FullTimeScore
+                   }).ToList(),
+                   Players = players,
+                   Spectators = spectators
+               })
+               .Single();          
 
             return match;
         }
 
-        private List<GoalInfo> GetGoals(IEnumerable<PlayersScore> playersScore)
+        private List<SpectatorInfo> GetSpectators(int matchId)
         {
-            var goals = playersScore.Select(g => new GoalInfo
-            {
-                Minute = g.Minute != null ? g.Minute.ToString() : string.Empty
-            }).ToList();
+            var spectators = this.Context.MatchesSpectators
+                .Where(x => x.MatchId == matchId)
+                .Select(s => new SpectatorInfo
+                {
+                    Id = s.Id,
+                    Name = s.Spectator.Name
+                }).ToList();
 
-            return goals;
+            return spectators;
         }
+
+        private List<PlayerMatchInfo> GetPlayers(int matchId)
+        {
+            var players = this.Context.MatchesLineUp
+                .Where(x => x.MatchId == matchId)
+                .Select(p => new PlayerMatchInfo
+                {
+                    PlayerId = p.PlayerId,
+                    PlayerNick = p.Player.NickName,
+                    TeamId = p.TeamId,
+                    RedCard = p.RedCard,
+                    YellowCard = p.YellowCard,
+                    ManOfTheMatch = p.ManOfTheMatch,
+                    Goals = p.PlayersScore.Select(g => new GoalInfo
+                    {
+                        Minute = g.Minute != null ? g.Minute.ToString() : string.Empty
+                    }).ToList()
+                }).ToList();
+
+            return players;
+        }
+
+
     }
 }
