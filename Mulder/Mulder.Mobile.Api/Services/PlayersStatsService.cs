@@ -18,16 +18,16 @@ namespace Mulder.Mobile.Api.Services
         public List<PlayerStatsInfo> TopScorers()
         {
             var players = this.Context.PlayersScore
-                .GroupBy(x => new { x.MatchesLineUp.PlayerId, x.MatchesLineUp.Player.NickName, x.MatchesLineUp.Player.Number },
-                (key, gr) => new PlayerStatsInfo
-                {
-                    Id = key.PlayerId,
-                    Nick = key.NickName,
-                    Number = key.Number,
-                    Stats = gr.Count()
-                })
-                .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
-                .ToList();
+            .GroupBy(x => new { x.MatchesLineUp.PlayerId, x.MatchesLineUp.Player.NickName, x.MatchesLineUp.Player.Number },
+            (key, gr) => new PlayerStatsInfo
+            {
+                Id = key.PlayerId,
+                Nick = key.NickName,
+                Number = key.Number,
+                Stats = gr.Count()
+            })
+            .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
+            .ToList();
 
             return players;
         }
@@ -35,16 +35,16 @@ namespace Mulder.Mobile.Api.Services
         public List<PlayerStatsInfo> TopCaps()
         {
             var players = this.Context.MatchesLineUp
-                .GroupBy(x => new { x.PlayerId, x.Player.NickName, x.Player.Number },
-                (key, gr) => new PlayerStatsInfo
-                {
-                    Id = key.PlayerId,
-                    Nick = key.NickName,
-                    Number = key.Number,
-                    Stats = gr.Count()
-                })
-                .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
-                .ToList();
+            .GroupBy(x => new { x.PlayerId, x.Player.NickName, x.Player.Number },
+            (key, gr) => new PlayerStatsInfo
+            {
+                Id = key.PlayerId,
+                Nick = key.NickName,
+                Number = key.Number,
+                Stats = gr.Count()
+            })
+            .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
+            .ToList();
 
             return players;
         }

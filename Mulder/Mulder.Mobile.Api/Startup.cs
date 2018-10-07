@@ -58,6 +58,7 @@ namespace Mulder.Mobile.Api
             services.AddDbContext<MulderContext>(options =>
             {
                 options.UseSqlServer(this.Secrets.GetValue<string>("SqlConnection"));
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             services.AddSwaggerGen(c =>

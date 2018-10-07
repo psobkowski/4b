@@ -54,34 +54,46 @@ namespace Mulder.Mobile.Api.Services
 
             return player;
         }
+
         private List<PlayerMatchStats> GetPlayerMatchStats(int playerId)
         {
-            var playerMatchStatsSql = (from u in this.Context.MatchesLineUp
-                                       join s in this.Context.MatchesScore on u.MatchId equals s.MatchId
-                                       join ps in this.Context.PlayersScore on u.Id equals ps.MatchesLineUpId into r
-                                       from pss in r.DefaultIfEmpty()
-                                       where u.PlayerId == playerId
-                                       group pss by new { u.MatchId, u.Match.Year, u.Player.CurrentTeamId, s.TeamId, s.HalfTimeScore, s.FullTimeScore, u.ManOfTheMatch, u.YellowCard } into gr
-                                       select new { gr.Key.MatchId, gr.Key.Year, gr.Key.CurrentTeamId, gr.Key.TeamId, gr.Key.HalfTimeScore, gr.Key.FullTimeScore, gr.Key.ManOfTheMatch, gr.Key.YellowCard, Goals = gr.Count(x => x != null) }
-                              ).ToList();
-
-            var playerMatchStats = playerMatchStatsSql.GroupBy(x => new { x.MatchId, x.Year, x.CurrentTeamId, x.ManOfTheMatch, x.YellowCard, x.Goals },
-                (key, gr) => new PlayerMatchStats
+            var query = (from pss in (from u in this.Context.MatchesLineUp
+                             join s in this.Context.MatchesScore on u.MatchId equals s.MatchId
+                             join ps in this.Context.PlayersScore on u.Id equals ps.MatchesLineUpId into r
+                             from pss in r.DefaultIfEmpty()
+                             where u.PlayerId == playerId
+                             select new
+                             {
+                                 s.MatchId,
+                                 s.Match.Year,
+                                 u.Player.CurrentTeamId,
+                                 s.TeamId,
+                                 s.HalfTimeScore,
+                                 s.FullTimeScore,
+                                 u.ManOfTheMatch,
+                                 u.YellowCard,
+                                 Goals = pss == null ? 0 : 1
+                             })
+                         group pss by new { pss.MatchId, pss.Year, pss.CurrentTeamId, pss.TeamId, pss.HalfTimeScore, pss.FullTimeScore, pss.ManOfTheMatch, pss.YellowCard } into gr
+                         select new { Pss = gr.Key, Goals = gr.Sum(x => x.Goals) }).ToList();
+                            
+            var playerMatchStats = query.GroupBy(x => new { x.Pss.MatchId, x.Pss.Year, x.Pss.CurrentTeamId, x.Pss.ManOfTheMatch, x.Pss.YellowCard, x.Goals },
+            (key, gr) => new PlayerMatchStats
+            {
+                MatchId = key.MatchId,
+                MatchYear = key.Year.ToString(),
+                ManOfTheMatch = key.ManOfTheMatch,
+                YellowCard = key.YellowCard,
+                MatchGoals = gr.Sum(gg => gg.Pss.FullTimeScore),
+                Goals = key.Goals,
+                MatchResult = MatchResultHelper.Result(gr.Select(si => new ScoreInfo
                 {
-                    MatchId = key.MatchId,
-                    MatchYear = key.Year.ToString(),
-                    ManOfTheMatch = key.ManOfTheMatch,
-                    YellowCard = key.YellowCard,
-                    MatchGoals = gr.Sum(gg => gg.FullTimeScore),
-                    Goals = key.Goals,
-                    MatchResult = MatchResultHelper.Result(gr.Select(si => new ScoreInfo
-                    {
-                        TeamId = si.TeamId,
-                        HalfTimeScore = si.HalfTimeScore,
-                        FullTimeScore = si.FullTimeScore
-                    }).ToList(), key.CurrentTeamId)
+                    TeamId = si.Pss.TeamId,
+                    HalfTimeScore = si.Pss.HalfTimeScore,
+                    FullTimeScore = si.Pss.FullTimeScore
+                }).ToList(), key.CurrentTeamId)
 
-                }).ToList();
+            }).ToList();
 
             return playerMatchStats;
         }
