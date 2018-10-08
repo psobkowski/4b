@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,6 +41,10 @@ namespace Mulder.Mobile.Api
                 if (this.Environment.IsDevelopment())
                 {
                     options.Filters.Add(new AllowAnonymousFilter());
+                }
+                else
+                {
+                    options.Filters.Add(new RequireHttpsAttribute());
                 }
             });
 
@@ -82,7 +87,11 @@ namespace Mulder.Mobile.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                var schemes = env.IsDevelopment() ? new[] { "http" } : new[] { "https" };
+                c.PreSerializeFilters.Add((swagger, httpReq) => swagger.Schemes = schemes);
+            });
 
             app.UseSwaggerUI(c =>
             {
