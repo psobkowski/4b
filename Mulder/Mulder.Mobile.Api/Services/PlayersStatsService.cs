@@ -55,17 +55,17 @@ namespace Mulder.Mobile.Api.Services
         public List<PlayerStatsInfo> TopMvps()
         {
             var players = this.Context.MatchesLineUp
-                .Where(x => x.ManOfTheMatch)
-                .GroupBy(x => new { x.PlayerId, x.Player.NickName, x.Player.Number },
-                (key, gr) => new PlayerStatsInfo
-                {
-                    Id = key.PlayerId,
-                    Nick = key.NickName,
-                    Number = key.Number,
-                    Stats = gr.Count()
-                })
-                .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
-                .ToList();
+            .Where(x => x.ManOfTheMatch)
+            .GroupBy(x => new { x.PlayerId, x.Player.NickName, x.Player.Number },
+            (key, gr) => new PlayerStatsInfo
+            {
+                Id = key.PlayerId,
+                Nick = key.NickName,
+                Number = key.Number,
+                Stats = gr.Count()
+            })
+            .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
+            .ToList();
 
             return players;
         }
@@ -81,7 +81,6 @@ namespace Mulder.Mobile.Api.Services
                 Number = key.Number,
                 Stats = gr.Count()
             })
-            //.OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
             .AsEnumerable();
 
             return players;
