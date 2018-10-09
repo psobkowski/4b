@@ -77,6 +77,7 @@ namespace Mulder.Mobile.Api.Services
         private List<MatchInfo> GetTeamMatches(int teamId)
         {
             var query = this.Context.Matches
+            .Where(m => m.MatchesScore.Any(t => t.TeamId == teamId))
             .SelectMany(x => x.MatchesScore, (x,c) =>  new
             {
                 c.MatchId,
@@ -86,7 +87,7 @@ namespace Mulder.Mobile.Api.Services
                 c.HalfTimeScore,
                 c.FullTimeScore
             })
-            .Where(x => x.TeamId == teamId)
+
             .AsEnumerable();
 
             var matches = query.GroupBy(x => new
