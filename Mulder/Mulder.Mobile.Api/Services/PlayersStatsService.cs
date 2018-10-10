@@ -17,36 +17,31 @@ namespace Mulder.Mobile.Api.Services
 
         public List<PlayerStatsInfo> TopScorers()
         {
-            var scorers = this.Context.PlayersScore
-            .GroupBy(x => new { x.MatchesLineUp.PlayerId, x.MatchesLineUp.Player.NickName, x.MatchesLineUp.Player.Number },
-            (key, gr) => new
-            {
-                Id = key.PlayerId,
-                Stats = gr.Count()
-            })
-            .AsEnumerable();
+           var query =  (from pss in (from u in this.Context.MatchesLineUp
+                          join ps in this.Context.PlayersScore on u.Id equals ps.MatchesLineUpId into r
+                          from pss in r.DefaultIfEmpty()
+                          select new
+                          {
+                              u.MatchId,
+                              u.Player.Id,
+                              u.Player.NickName,
+                              u.Player.Number,
+                              Goals = pss == null ? 0 : 1
+                          })
+            group pss by new { pss.MatchId, pss.Id, pss.NickName, pss.Number } into gr
+            select new { Pss = gr.Key, Goals = gr.Sum(x => x.Goals) }).ToList();
 
-            var caps = this.GetCaps();
-
-            var players = scorers.Join(caps, p => p.Id, c => c.Id,
-            (p, c) => new PlayerStatsInfo
+            var players = query
+            .GroupBy(x => new {x.Pss.Id, x.Pss.NickName, x.Pss.Number }, (key, gr) => new PlayerStatsInfo
             {
-                Id = p.Id,
-                Nick = c.Nick,
-                Number = c.Number,
-                Stats = p.Stats,
-                Ratio = string.Format("{0:0.0}", c.Stats > 0 ? (double)p.Stats / c.Stats : 0)
+                Id = key.Id,
+                Nick = key.NickName,
+                Number = key.Number,
+                Stats = gr.Sum(x => x.Goals),
+                Ratio = string.Format("{0:0.0}", gr.Average(x => x.Goals))
             })
+            .Where(x => x.Stats > 0)
             .OrderByDescending(o => o.Stats).ThenByDescending(o => o.Ratio)
-            .ToList();
-
-            return players;
-        }
-
-        public List<PlayerStatsInfo> TopCaps()
-        {
-            var players = this.GetCaps()
-            .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
             .ToList();
 
             return players;
@@ -70,7 +65,7 @@ namespace Mulder.Mobile.Api.Services
             return players;
         }
 
-        private IEnumerable<PlayerStatsInfo> GetCaps()
+        public List<PlayerStatsInfo> TopCaps()
         {
             var players = this.Context.MatchesLineUp
             .GroupBy(x => new { x.PlayerId, x.Player.NickName, x.Player.Number },
@@ -81,7 +76,8 @@ namespace Mulder.Mobile.Api.Services
                 Number = key.Number,
                 Stats = gr.Count()
             })
-            .AsEnumerable();
+            .OrderByDescending(o => o.Stats).ThenBy(o => o.Nick)
+            .ToList();
 
             return players;
         }
